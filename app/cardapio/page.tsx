@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import espetinhos from '../../data/espetinhos.json'
 import bebidas from '../../data/bebidas.json'
@@ -16,11 +16,13 @@ interface CartItem {
   preco: number
   quantidade: number
   tamanho?: string
+  sabor?: string
 }
 
 interface QuantityState {
   quantidade: number
   tamanho?: string
+  sabor?: string
 }
 
 interface SectionQuantities {
@@ -29,18 +31,42 @@ interface SectionQuantities {
 
 function CardapioContent() {
   const searchParams = useSearchParams()
+
   const [carrinho, setCarrinho] = useState<CartItem[]>(() => {
-    const carrinhoParam = searchParams.get('carrinho')
-    if (carrinhoParam) {
-      try {
-        return JSON.parse(carrinhoParam)
-      } catch (error) {
-        console.error('Erro ao parsear o carrinho:', error)
-        return []
+    // Verifica se está no ambiente do navegador antes de acessar localStorage
+    if (typeof window !== 'undefined') {
+      // Primeiro, tenta buscar do localStorage
+      const savedCarrinho = localStorage.getItem('carrinho')
+      if (savedCarrinho) {
+        try {
+          return JSON.parse(savedCarrinho)
+        } catch (error) {
+          console.error('Erro ao parsear o carrinho do localStorage:', error)
+          return []
+        }
+      }
+
+      // Se não existir no localStorage, tenta buscar dos search params
+      const carrinhoParam = searchParams.get('carrinho')
+      if (carrinhoParam) {
+        try {
+          return JSON.parse(carrinhoParam)
+        } catch (error) {
+          console.error('Erro ao parsear o carrinho:', error)
+          return []
+        }
       }
     }
+
     return []
   })
+
+  // Sempre que o carrinho mudar, salva no localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('carrinho', JSON.stringify(carrinho))
+    }
+  }, [carrinho])
 
   const [quantities, setQuantities] = useState<{
     [key: string]: SectionQuantities
@@ -49,7 +75,13 @@ function CardapioContent() {
       acc[item.id] = { quantidade: 1, tamanho: 'Simples' }
       return acc
     }, {}),
-    bebidas: {},
+    bebidas: bebidas.bebidas.reduce<SectionQuantities>((acc, item) => {
+      acc[item.id] = {
+        quantidade: 1,
+        sabor: item.opcoes ? item.opcoes[0] : (item.sabores ? item.sabores[0] : undefined)
+      }
+      return acc
+    }, {}),
     hamburgueres: {},
     pratosDoDia: {},
     porcoes: {},
@@ -60,13 +92,14 @@ function CardapioContent() {
     section: string,
     itemId: number,
     quantidade: number,
-    tamanho?: string
+    tamanho?: string,
+    sabor?: string
   ) => {
     setQuantities(prev => ({
       ...prev,
       [section]: {
         ...prev[section],
-        [itemId]: { quantidade, tamanho }
+        [itemId]: { quantidade, tamanho, sabor }
       }
     }))
   }
@@ -78,17 +111,24 @@ function CardapioContent() {
     const itemDetails = quantities[section][item.id] || { quantidade: 1 }
     let cartItem: CartItem = {
       id: item.id,
-      nome: item.nome,
-      preco: section === 'espetinhos' 
-        ? item.precos[itemDetails.tamanho === 'Simples' ? 'Simples' : 'Acompanhamento']
+      nome: section === 'bebidas'
+        ? `${item.nome} - ${itemDetails.sabor}`
+        : section === 'espetinhos'
+          ? `${item.nome} - ${itemDetails.tamanho}`
+          : item.nome,
+      preco: section === 'espetinhos'
+        ? (item.precos && item.precos[itemDetails.tamanho === 'Simples' ? 'Simples' : 'Acompanhamento'] || item.preco)
         : item.preco,
       quantidade: itemDetails.quantidade,
-      tamanho: itemDetails.tamanho
+      tamanho: itemDetails.tamanho,
+      sabor: itemDetails.sabor
     }
 
     const updatedCart = [...carrinho]
-    const existingIndex = updatedCart.findIndex(cartItem => 
-      cartItem.id === item.id && cartItem.tamanho === itemDetails.tamanho
+    const existingIndex = updatedCart.findIndex(cartItem =>
+      cartItem.id === item.id &&
+      cartItem.tamanho === itemDetails.tamanho &&
+      cartItem.sabor === itemDetails.sabor
     )
 
     if (existingIndex > -1) {
@@ -103,6 +143,15 @@ function CardapioContent() {
   const renderMenuItem = (item: any, section: string) => {
     const itemDetails = quantities[section][item.id] || { quantidade: 1 }
     const showTamanho = section === 'espetinhos'
+    const showSabor = section === 'bebidas'
+
+    const calcPrice = () => {
+      if (showTamanho && item.precos) {
+        const selectedSize = itemDetails.tamanho === 'Simples' ? 'Simples' : 'Acompanhamento'
+        return item.precos[selectedSize] || 0
+      }
+      return item.preco || 0
+    }
 
     return (
       <div key={`${section}-${item.id}`} className="border rounded-lg overflow-hidden shadow-md bg-[#5d4037]/80 p-3 md:p-4 text-white">
@@ -117,7 +166,14 @@ function CardapioContent() {
           <h2 className="text-lg md:text-xl font-semibold text-[#ff6f00]">
             {item.nome}
           </h2>
-          
+
+          {/* Adicionando descrição para pratos do dia */}
+          {item.descricao && (
+            <p className="text-sm md:text-base text-white/80 mb-2">
+              {item.descricao}
+            </p>
+          )}
+
           {item.ingredientes && (
             <p className="text-sm md:text-base text-white mb-2">
               {item.ingredientes.join(', ')}
@@ -126,10 +182,7 @@ function CardapioContent() {
 
           <div className="flex flex-col sm:flex-row justify-between items-center mb-2 space-y-2 sm:space-y-0">
             <span className="text-base md:text-lg font-bold text-[#e9e2dd]">
-              R$ {(showTamanho 
-                ? item.precos[itemDetails.tamanho === 'Simples' ? 'Simples' : 'Acompanhamento']
-                : item.preco
-              ).toFixed(2)}
+              R$ {calcPrice().toFixed(2)}
             </span>
 
             {showTamanho && (
@@ -140,14 +193,34 @@ function CardapioContent() {
                     section,
                     item.id,
                     itemDetails.quantidade,
-                    e.target.value as 'Simples' | 'Acompanhamento (completo)'
+                    e.target.value as 'Simples' | 'Acompanhamento (completo)',
+                    itemDetails.sabor
                   )
                 }}
                 className="border rounded px-2 py-1 text-sm w-full sm:w-auto bg-[#4a2c2a] text-white"
               >
-                {item.tamanhos.map((tamanho: string) => (
-                  <option key={tamanho} value={tamanho}>
-                    {tamanho}
+                <option value="Simples">Simples</option>
+                <option value="Acompanhamento (completo)">Acompanhamento (completo)</option>
+              </select>
+            )}
+
+            {showSabor && (
+              <select
+                value={itemDetails.sabor || ''}
+                onChange={(e) => {
+                  updateQuantity(
+                    section,
+                    item.id,
+                    itemDetails.quantidade,
+                    undefined,
+                    e.target.value
+                  )
+                }}
+                className="border rounded px-2 py-1 text-sm w-full sm:w-auto bg-[#4a2c2a] text-white"
+              >
+                {(item.opcoes || item.sabores)?.map((sabor: string) => (
+                  <option key={sabor} value={sabor}>
+                    {sabor}
                   </option>
                 ))}
               </select>
@@ -164,7 +237,8 @@ function CardapioContent() {
                   section,
                   item.id,
                   parseInt(e.target.value),
-                  itemDetails.tamanho
+                  itemDetails.tamanho,
+                  itemDetails.sabor
                 )
               }}
               className="w-full sm:w-16 border rounded px-2 py-1 text-center text-sm bg-[#4a2c2a] text-white"
@@ -199,7 +273,7 @@ function CardapioContent() {
       >
         <Home className="w-4 h-4 md:w-6 md:h-6" />
       </Link>
-      
+
       <div className="absolute inset-0 bg-black opacity-60"></div>
 
       <div className="relative z-10 container mx-auto px-2 md:px-4 py-4 md:py-8 min-h-screen">

@@ -5,28 +5,28 @@
         "nome": "Badboy",
         "preco": 20.00,
         "ingredientes": ["Pão", "Queijo", "Carne Bovina", "Molho", "Salada"],
-        "imagem": "/img/hamburgueres/badboy.jpg"
+        "imagem": "/img/Hamburguer/Hamburguer.png"
       },
       {
         "id": 2,
         "nome": "Badbacon",
         "preco": 25.00,
         "ingredientes": ["Pão", "Queijo", "Carne Bovina", "Bacon", "Toscana", "Molho", "Salada"],
-        "imagem": "/img/hamburgueres/badbacon.jpg"
+        "imagem": "/img/Hamburguer/hamburguer.png"
       },
       {
         "id": 3,
         "nome": "Apocalipse",
         "preco": 25.00,
         "ingredientes": ["Pão", "Carne Bovina", "Carne Suína", "Toscana", "Queijo", "Molho", "Salada"],
-        "imagem": "/img/hamburgueres/apocalipse.jpg"
+        "imagem": "/img/Hamburguer/hamburguer.png"
       },
       {
         "id": 4, 
         "nome": "Cataclisma",
         "preco": 30.00,
         "ingredientes": ["Pão", "Queijo", "Carne Bovina", "Carne Suína", "Toscana", "Bacon", "Molho", "Salada"],
-        "imagem": "/img/hamburgueres/cataclisma.jpg"
+        "imagem": "/img/Hamburguer/hamburguer.png"
       }
     ]
   }

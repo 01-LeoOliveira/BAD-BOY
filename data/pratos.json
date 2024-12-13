@@ -1,66 +1,101 @@
 {
-    "pratos_do_dia": [
-      {
-        "id": 1,
-        "nome": "Coxão Mole",
-        "preco": 28.00,
-        "acompanhamentos": ["Arroz", "Baião", "Farofa", "Salada"],
-        "imagem": "/img/pratos/coxao_mole.jpg"
-      },
-      {
-        "id": 2,
-        "nome": "Charqueado",
-        "preco": 28.00,
-        "acompanhamentos": ["Arroz", "Baião", "Farofa", "Salada"],
-        "imagem": "/img/pratos/charqueado.jpg"
-      },
-      {
-        "id": 3,
-        "nome": "Porco",
-        "preco": 28.00,
-        "acompanhamentos": ["Arroz", "Baião", "Farofa", "Salada"],
-        "imagem": "/img/pratos/porco.jpg"
-      }
-    ],
-    "porcoes": [
-      {
-        "id": 1,
-        "nome": "Batata",
-        "preco": 10.00,
-        "imagem": "/img/porcoes/batata.jpg"
-      },
-      {
-        "id": 2,
-        "nome": "Porções",
-        "preco": 7.00,
-        "imagem": "/img/porcoes/porcoes.jpg"
-      },
-      {
-        "id": 3,
-        "nome": "Arroz",
-        "preco": 7.00,
-        "imagem": "/img/porcoes/arroz.jpg"
-      },
-      {
-        "id": 4,
-        "nome": "Baião",
-        "preco": 7.00,
-        "imagem": "/img/porcoes/baiao.jpg"
-      },
-      {
-        "id": 5,
-        "nome": "Feijão",
-        "preco": 7.00,
-        "imagem": "/img/porcoes/feijao.jpg"
-      }
-    ],
-    "sobremesas": [
-      {
-        "id": 1,
-        "nome": "Brownie",
-        "preco": 5.00,
-        "sabores": ["Chocolate Preto", "Chocolate Branco", "Doce de Leite"],
-        "imagem": "/img/sobremesas/brownie.jpg"
-      }
-    ]
-  }
+  "pratos_do_dia": [
+    {
+      "id": 1,
+      "nome": "Coxão Mole",
+      "preco": 28.00,
+      "descricao": "Corte tradicional de carne bovina macia, preparado com temperos especiais. Servido com uma variedade de acompanhamentos que complementam perfeitamente o prato principal.",
+      "acompanhamentos": ["Arroz", "Baião", "Farofa", "Salada"],
+      "detalhe_acompanhamentos": "Prato completo que inclui arroz branco, baião de dois, farofa crocante e salada fresca, oferecendo uma refeição balanceada e saborosa.",
+      "imagem": "/img/pratos/coxaomole.jpg"
+    },
+    {
+      "id": 2,
+      "nome": "Charqueado",
+      "preco": 28.00,
+      "descricao": "Prato típico brasileiro feito com carne seca (charque) tradicional, preparado com todo o sabor e técnica regional, garantindo uma experiência gastronômica autêntica.",
+      "acompanhamentos": ["Arroz", "Baião", "Farofa", "Salada"],
+      "detalhe_acompanhamentos": "Acompanhamentos clássicos que equilibram o sabor intenso da carne seca: arroz branco, baião de dois cremoso, farofa sequinha e salada fresca para refrescar o paladar.",
+      "imagem": "/img/pratos/charqueado.jpg"
+    },
+    {
+      "id": 3,
+      "nome": "Porco",
+      "preco": 28.00,
+      "descricao": "Delicioso prato de carne suína preparado com marinada especial, assado ou grelhado para garantir maciez e sabor incomparáveis.",
+      "acompanhamentos": ["Arroz", "Baião", "Farofa", "Salada"],
+      "detalhe_acompanhamentos": "Conjunto de acompanhamentos pensados para complementar a carne suína: arroz branco, baião de dois rico em sabores, farofa tradicional e salada fresca para um toque de leveza.",
+      "imagem": "/img/pratos/porco.jpg"
+    }
+  ],
+  "porcoes": [
+    {
+      "id": 1,
+      "nome": "Batata",
+      "preco": 10.00,
+      "descricao": "Porção generosa de batatas crocantes por fora e macias por dentro, preparadas com temperos especiais.",
+      "imagem": "/img/porcoes/batata.jpg"
+    },
+    {
+      "id": 2,
+      "nome": "Arroz",
+      "preco": 7.00,
+      "descricao": "Arroz branco soltinho e bem temperado, o acompanhamento perfeito para seus pratos principais.",
+      "imagem": "/img/porcoes/arroz.jpg"
+    },
+    {
+      "id": 3,
+      "nome": "Baião",
+      "preco": 7.00,
+      "descricao": "Baião de dois tradicional, mistura cremosa de arroz com feijão, queijo e temperos típicos do nordeste brasileiro.",
+      "imagem": "/img/porcoes/baiao.jpg"
+    },
+    {
+      "id": 4,
+      "nome": "Feijão",
+      "preco": 7.00,
+      "descricao": "Feijão bem cozido e temperado, preparado com técnica para realçar o sabor autêntico.",
+      "imagem": "/img/porcoes/feijao.jpg"
+    },
+    {
+      "id": 5,
+      "nome": "Farofa de ovo",
+      "preco": 7.00,
+      "descricao": "Farofa tradicional enriquecida com ovos, crocante e saborosa, perfeita para acompanhar seus pratos.",
+      "imagem": "/img/porcoes/farofadeovo.jpg"
+    },  
+    {
+      "id": 6,
+      "nome": "Salada",
+      "preco": 7.00,
+      "descricao": "Salada fresca e colorida, preparada com ingredientes selecionados para trazer leveza à sua refeição.",
+      "imagem": "/img/porcoes/salada.jpg"
+    }
+  ],
+  "sobremesas": [
+    {
+      "id": 1,
+      "nome": "Brownie",
+      "preco": 5.00,
+      "descricao": "Brownie cremoso e intenso, preparado com chocolate de alta qualidade, com casca crocante e interior macio.",
+      "sabores": ["Chocolate Preto", "Chocolate Branco", "Doce de Leite"],
+      "imagem": "/img/sobremesas/brownie.jpg"
+    },
+    {
+      "id": 2,
+      "nome": "Creme de cupuaçu",
+      "preco": 5.00,
+      "descricao": "Sobremesa típica amazônica, cremosa e refrescante, feita com o autêntico cupuaçu, com sabor único e tropical.",
+      "sabores": ["Chocolate Preto", "Chocolate Branco", "Doce de Leite"],
+      "imagem": "/img/sobremesas/cremedecupu.jpg"
+    },
+    {
+      "id": 3,
+      "nome": "Pudim",
+      "preco": 5.00,
+      "descricao": "Pudim tradicional brasileiro, cremoso e aveludado, com calda caramelada irresistível.",
+      "sabores": ["Chocolate Preto", "Chocolate Branco", "Doce de Leite"],
+      "imagem": "/img/sobremesas/pudim.jpg"
+    }
+  ]
+}
