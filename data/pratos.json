@@ -1,0 +1,66 @@
+{
+    "pratos_do_dia": [
+      {
+        "id": 1,
+        "nome": "Coxão Mole",
+        "preco": 28.00,
+        "acompanhamentos": ["Arroz", "Baião", "Farofa", "Salada"],
+        "imagem": "/img/pratos/coxao_mole.jpg"
+      },
+      {
+        "id": 2,
+        "nome": "Charqueado",
+        "preco": 28.00,
+        "acompanhamentos": ["Arroz", "Baião", "Farofa", "Salada"],
+        "imagem": "/img/pratos/charqueado.jpg"
+      },
+      {
+        "id": 3,
+        "nome": "Porco",
+        "preco": 28.00,
+        "acompanhamentos": ["Arroz", "Baião", "Farofa", "Salada"],
+        "imagem": "/img/pratos/porco.jpg"
+      }
+    ],
+    "porcoes": [
+      {
+        "id": 1,
+        "nome": "Batata",
+        "preco": 10.00,
+        "imagem": "/img/porcoes/batata.jpg"
+      },
+      {
+        "id": 2,
+        "nome": "Porções",
+        "preco": 7.00,
+        "imagem": "/img/porcoes/porcoes.jpg"
+      },
+      {
+        "id": 3,
+        "nome": "Arroz",
+        "preco": 7.00,
+        "imagem": "/img/porcoes/arroz.jpg"
+      },
+      {
+        "id": 4,
+        "nome": "Baião",
+        "preco": 7.00,
+        "imagem": "/img/porcoes/baiao.jpg"
+      },
+      {
+        "id": 5,
+        "nome": "Feijão",
+        "preco": 7.00,
+        "imagem": "/img/porcoes/feijao.jpg"
+      }
+    ],
+    "sobremesas": [
+      {
+        "id": 1,
+        "nome": "Brownie",
+        "preco": 5.00,
+        "sabores": ["Chocolate Preto", "Chocolate Branco", "Doce de Leite"],
+        "imagem": "/img/sobremesas/brownie.jpg"
+      }
+    ]
+  }

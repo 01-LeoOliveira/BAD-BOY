@@ -1,0 +1,50 @@
+{
+  "espetos": [
+    {
+      "id": 1,
+      "nome": "Espeto de Carne", 
+      "precos": {
+        "Simples": 15.00,
+        "Acompanhamento": 20.00
+      },
+      "tamanhos": ["Simples", "Acompanhamento (completo)"],
+      "acompanhamentos": ["Arroz", "Baião", "Vinagrete", "Farofa"],
+      "imagem": "/img/espetos/carne.jpg"
+    },
+    {
+      "id": 2,
+      "nome": "Espeto de Toscana",
+      "precos": {
+        "Simples": 15.00,
+        "Acompanhamento": 20.00
+      },
+      "tamanhos": ["Simples", "Acompanhamento (completo)"],
+      "acompanhamentos": ["Arroz", "Baião", "Vinagrete", "Farofa"],
+      "imagem": "/img/espetos/toscana.jpg"
+    },
+    {
+      "id": 3,
+      "nome": "Calabresa (por unidade)",
+      "precos": {
+        "Simples": 3.00,
+        "Acompanhamento": 8.00
+      },
+      "tamanhos": ["Simples", "Acompanhamento (completo)"],
+      "imagem": "/img/espetos/calabresa.jpg"
+    }
+  ],
+  "carnes": [
+    {
+      "id": 1,
+      "nome": "Carne (só a proteína) - Fatia",
+      "preco": 22.00,
+      "imagem": "/img/carnes/fatia.jpg"
+    },
+    {
+      "id": 2, 
+      "nome": "Carne (só a proteína) - Espeto",
+      "preco": 10.00,
+      "imagem": "/img/carnes/espeto.jpg"
+    }
+  ]
+}

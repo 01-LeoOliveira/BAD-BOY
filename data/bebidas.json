@@ -1,0 +1,31 @@
+{
+  "bebidas": [
+    {
+      "id": 1,
+      "nome": "Litro",
+      "preco": 10.00,
+      "opcoes": ["Pepsi", "Guaraná", "Coca Normal"],
+      "imagem": "/img/bebidas/litro.jpg"
+    },
+    {
+      "id": 2, 
+      "nome": "Lata",
+      "preco": 7.00,
+      "opcoes": ["Coca Zero", "Coca Normal", "Pepsi Twist", "Pepsi Black", "Sprite"],
+      "imagem": "/img/bebidas/lata.jpg"
+    },
+    {
+      "id": 3,
+      "nome": "Sucos",
+      "preco": 7.00, 
+      "sabores": ["Maracujá", "Goiaba", "Acerola"],
+      "imagem": "/img/bebidas/suco.jpg"
+    },
+    {
+      "id": 4,
+      "nome": "Água",
+      "preco": 4.00,
+      "imagem": "/img/bebidas/agua.jpg"
+    }
+  ]
+}

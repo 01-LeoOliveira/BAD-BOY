@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #ffcbdb;
+  color: #000000;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Estilos personalizados */
+.bg-soft-pink {
+  background-color: #fff;
+}
+
+.text-pink-title {
+  color: #ff69b4;
+}
