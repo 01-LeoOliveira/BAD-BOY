@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 import espetinhos from '../../data/espetinhos.json'
 import bebidas from '../../data/bebidas.json'
 import hamburguer from '../../data/hamburguer.json'
@@ -9,6 +8,7 @@ import pratos from '../../data/pratos.json'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ShoppingCart, Home, Trash2 } from 'lucide-react'
+import { Suspense } from 'react'
 
 interface CartItem {
   id: number
@@ -29,9 +29,19 @@ interface SectionQuantities {
   [key: number]: QuantityState
 }
 
-function CardapioContent() {
-  const searchParams = useSearchParams()
+interface MenuItem {
+  id: number
+  nome: string
+  preco?: number
+  precos?: { Simples: number; Acompanhamento: number }
+  imagem: string
+  descricao?: string
+  ingredientes?: string[]
+  opcoes?: string[]
+  sabores?: string[]
+}
 
+function CardapioContent() {
   const [carrinho, setCarrinho] = useState<CartItem[]>(() => {
     if (typeof window !== 'undefined') {
       const savedCarrinho = localStorage.getItem('carrinho')
@@ -55,7 +65,7 @@ function CardapioContent() {
   }
 
   // Função para validar e calcular o preço correto
-  const calculatePrice = (item: any, section: string, tamanho?: string): number => {
+  const calculatePrice = (item: MenuItem, section: string, tamanho?: string): number => {
     if (section === 'espetinhos' && item.precos) {
       return tamanho === 'Simples' ? item.precos.Simples : item.precos.Acompanhamento
     }
@@ -99,14 +109,14 @@ function CardapioContent() {
   }
 
   const addToCart = (
-    item: any,
+    item: MenuItem,
     section: string
   ) => {
     const itemDetails = quantities[section][item.id] || { quantidade: 1 }
     const validatedQuantity = validateQuantity(itemDetails.quantidade)
     const validatedPrice = calculatePrice(item, section, itemDetails.tamanho)
 
-    let cartItem: CartItem = {
+    const cartItem: CartItem = {
       id: item.id,
       nome: section === 'bebidas'
         ? `${item.nome} - ${itemDetails.sabor || item.opcoes?.[0] || item.sabores?.[0]}`
@@ -136,8 +146,8 @@ function CardapioContent() {
     localStorage.setItem('carrinho', JSON.stringify(updatedCart))
   }
 
-  const renderMenuItem = (item: any, section: string) => {
-    const itemDetails = quantities[section][item.id] || { 
+  const renderMenuItem = (item: MenuItem, section: string) => {
+    const itemDetails = quantities[section][item.id] || {
       quantidade: 1,
       tamanho: 'Simples',
       sabor: item.opcoes?.[0] || item.sabores?.[0]
