@@ -8,7 +8,7 @@ import hamburguer from '../../data/hamburguer.json'
 import pratos from '../../data/pratos.json'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ShoppingCart, Home } from 'lucide-react'
+import { ShoppingCart, Home, Trash2 } from 'lucide-react'
 
 interface CartItem {
   id: number
@@ -33,9 +33,7 @@ function CardapioContent() {
   const searchParams = useSearchParams()
 
   const [carrinho, setCarrinho] = useState<CartItem[]>(() => {
-    // Verifica se está no ambiente do navegador antes de acessar localStorage
     if (typeof window !== 'undefined') {
-      // Primeiro, tenta buscar do localStorage
       const savedCarrinho = localStorage.getItem('carrinho')
       if (savedCarrinho) {
         try {
@@ -45,43 +43,38 @@ function CardapioContent() {
           return []
         }
       }
-
-      // Se não existir no localStorage, tenta buscar dos search params
-      const carrinhoParam = searchParams.get('carrinho')
-      if (carrinhoParam) {
-        try {
-          return JSON.parse(carrinhoParam)
-        } catch (error) {
-          console.error('Erro ao parsear o carrinho:', error)
-          return []
-        }
-      }
     }
-
     return []
   })
 
-  // Sempre que o carrinho mudar, salva no localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('carrinho', JSON.stringify(carrinho))
+  // Função para remover item do carrinho
+  const removeFromCart = (index: number) => {
+    const newCarrinho = carrinho.filter((_, i) => i !== index)
+    setCarrinho(newCarrinho)
+    localStorage.setItem('carrinho', JSON.stringify(newCarrinho))
+  }
+
+  // Função para validar e calcular o preço correto
+  const calculatePrice = (item: any, section: string, tamanho?: string): number => {
+    if (section === 'espetinhos' && item.precos) {
+      return tamanho === 'Simples' ? item.precos.Simples : item.precos.Acompanhamento
     }
-  }, [carrinho])
+    return item.preco || 0
+  }
+
+  // Função para validar quantidade
+  const validateQuantity = (quantidade: number): number => {
+    if (isNaN(quantidade) || quantidade < 1) {
+      return 1
+    }
+    return Math.floor(quantidade) // Garante que seja um número inteiro
+  }
 
   const [quantities, setQuantities] = useState<{
     [key: string]: SectionQuantities
   }>({
-    espetinhos: espetinhos.espetos.reduce<SectionQuantities>((acc, item) => {
-      acc[item.id] = { quantidade: 1, tamanho: 'Simples' }
-      return acc
-    }, {}),
-    bebidas: bebidas.bebidas.reduce<SectionQuantities>((acc, item) => {
-      acc[item.id] = {
-        quantidade: 1,
-        sabor: item.opcoes ? item.opcoes[0] : (item.sabores ? item.sabores[0] : undefined)
-      }
-      return acc
-    }, {}),
+    espetinhos: {},
+    bebidas: {},
     hamburgueres: {},
     pratosDoDia: {},
     porcoes: {},
@@ -95,11 +88,12 @@ function CardapioContent() {
     tamanho?: string,
     sabor?: string
   ) => {
+    const validatedQuantity = validateQuantity(quantidade)
     setQuantities(prev => ({
       ...prev,
       [section]: {
         ...prev[section],
-        [itemId]: { quantidade, tamanho, sabor }
+        [itemId]: { quantidade: validatedQuantity, tamanho, sabor }
       }
     }))
   }
@@ -109,48 +103,50 @@ function CardapioContent() {
     section: string
   ) => {
     const itemDetails = quantities[section][item.id] || { quantidade: 1 }
+    const validatedQuantity = validateQuantity(itemDetails.quantidade)
+    const validatedPrice = calculatePrice(item, section, itemDetails.tamanho)
+
     let cartItem: CartItem = {
       id: item.id,
       nome: section === 'bebidas'
-        ? `${item.nome} - ${itemDetails.sabor}`
+        ? `${item.nome} - ${itemDetails.sabor || item.opcoes?.[0] || item.sabores?.[0]}`
         : section === 'espetinhos'
-          ? `${item.nome} - ${itemDetails.tamanho}`
+          ? `${item.nome} - ${itemDetails.tamanho || 'Simples'}`
           : item.nome,
-      preco: section === 'espetinhos'
-        ? (item.precos && item.precos[itemDetails.tamanho === 'Simples' ? 'Simples' : 'Acompanhamento'] || item.preco)
-        : item.preco,
-      quantidade: itemDetails.quantidade,
-      tamanho: itemDetails.tamanho,
-      sabor: itemDetails.sabor
+      preco: validatedPrice,
+      quantidade: validatedQuantity,
+      tamanho: itemDetails.tamanho || 'Simples',
+      sabor: itemDetails.sabor || item.opcoes?.[0] || item.sabores?.[0]
     }
 
     const updatedCart = [...carrinho]
-    const existingIndex = updatedCart.findIndex(cartItem =>
-      cartItem.id === item.id &&
-      cartItem.tamanho === itemDetails.tamanho &&
-      cartItem.sabor === itemDetails.sabor
+    const existingIndex = updatedCart.findIndex(existingItem =>
+      existingItem.id === item.id &&
+      existingItem.tamanho === itemDetails.tamanho &&
+      existingItem.sabor === itemDetails.sabor
     )
 
     if (existingIndex > -1) {
-      updatedCart[existingIndex].quantidade += itemDetails.quantidade
+      updatedCart[existingIndex].quantidade += validatedQuantity
     } else {
       updatedCart.push(cartItem)
     }
 
     setCarrinho(updatedCart)
+    localStorage.setItem('carrinho', JSON.stringify(updatedCart))
   }
 
   const renderMenuItem = (item: any, section: string) => {
-    const itemDetails = quantities[section][item.id] || { quantidade: 1 }
+    const itemDetails = quantities[section][item.id] || { 
+      quantidade: 1,
+      tamanho: 'Simples',
+      sabor: item.opcoes?.[0] || item.sabores?.[0]
+    }
     const showTamanho = section === 'espetinhos'
     const showSabor = section === 'bebidas'
 
     const calcPrice = () => {
-      if (showTamanho && item.precos) {
-        const selectedSize = itemDetails.tamanho === 'Simples' ? 'Simples' : 'Acompanhamento'
-        return item.precos[selectedSize] || 0
-      }
-      return item.preco || 0
+      return calculatePrice(item, section, itemDetails.tamanho)
     }
 
     return (
@@ -167,7 +163,6 @@ function CardapioContent() {
             {item.nome}
           </h2>
 
-          {/* Adicionando descrição para pratos do dia */}
           {item.descricao && (
             <p className="text-sm md:text-base text-white/80 mb-2">
               {item.descricao}
@@ -193,7 +188,7 @@ function CardapioContent() {
                     section,
                     item.id,
                     itemDetails.quantidade,
-                    e.target.value as 'Simples' | 'Acompanhamento (completo)',
+                    e.target.value,
                     itemDetails.sabor
                   )
                 }}
@@ -212,7 +207,7 @@ function CardapioContent() {
                     section,
                     item.id,
                     itemDetails.quantidade,
-                    undefined,
+                    itemDetails.tamanho,
                     e.target.value
                   )
                 }}
@@ -255,7 +250,36 @@ function CardapioContent() {
     )
   }
 
-  const valorTotal = carrinho.reduce((total, item) => total + (item.preco * item.quantidade), 0)
+  const valorTotal = carrinho.reduce((total, item) => {
+    const itemPrice = Number(item.preco) || 0
+    const itemQuantity = validateQuantity(item.quantidade)
+    return total + (itemPrice * itemQuantity)
+  }, 0)
+
+  // Mini carrinho flutuante
+  const renderMiniCart = () => {
+    if (carrinho.length === 0) return null
+
+    return (
+      <div className="fixed bottom-16 right-4 md:right-6 z-40 bg-[#5d4037] text-white p-4 rounded-lg shadow-lg max-w-sm w-full md:w-96 max-h-96 overflow-y-auto">
+        <h3 className="font-bold mb-2">Itens no Carrinho:</h3>
+        {carrinho.map((item, index) => (
+          <div key={index} className="flex justify-between items-center mb-2 border-b border-white/20 pb-2">
+            <div>
+              <p className="text-sm">{item.nome}</p>
+              <p className="text-xs">Qtd: {item.quantidade} x R$ {item.preco.toFixed(2)}</p>
+            </div>
+            <button
+              onClick={() => removeFromCart(index)}
+              className="text-red-400 hover:text-red-500"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div
@@ -278,16 +302,19 @@ function CardapioContent() {
 
       <div className="relative z-10 container mx-auto px-2 md:px-4 py-4 md:py-8 min-h-screen">
         {carrinho.length > 0 && (
-          <Link
-            href={{
-              pathname: '/pedidos',
-              query: { carrinho: JSON.stringify(carrinho) }
-            }}
-            className="fixed bottom-4 md:bottom-6 right-4 md:right-6 z-50 bg-[#ff6f00] text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-[#ff8f00] flex items-center text-sm md:text-base"
-          >
-            <ShoppingCart className="mr-1 md:mr-2 w-4 h-4 md:w-6 md:h-6" />
-            {carrinho.length} | R$ {valorTotal.toFixed(2)}
-          </Link>
+          <>
+            {renderMiniCart()}
+            <Link
+              href={{
+                pathname: '/pedidos',
+                query: { carrinho: JSON.stringify(carrinho) }
+              }}
+              className="fixed bottom-4 md:bottom-6 right-4 md:right-6 z-50 bg-[#ff6f00] text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-[#ff8f00] flex items-center text-sm md:text-base"
+            >
+              <ShoppingCart className="mr-1 md:mr-2 w-4 h-4 md:w-6 md:h-6" />
+              {carrinho.length} | R$ {valorTotal.toFixed(2)}
+            </Link>
+          </>
         )}
 
         {/* Hamburgueres */}
