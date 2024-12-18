@@ -7,7 +7,7 @@ import hamburguer from '../../data/hamburguer.json'
 import pratos from '../../data/pratos.json'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ShoppingCart, Home, Trash2 } from 'lucide-react'
+import { ShoppingCart, Home, Trash2, Plus, Minus } from 'lucide-react'
 import { Suspense } from 'react'
 
 interface CartItem {
@@ -159,6 +159,16 @@ function CardapioContent() {
       return calculatePrice(item, section, itemDetails.tamanho)
     }
 
+    const handleQuantityChange = (newQuantity: number) => {
+      updateQuantity(
+        section,
+        item.id,
+        newQuantity,
+        itemDetails.tamanho,
+        itemDetails.sabor
+      )
+    }
+
     return (
       <div key={`${section}-${item.id}`} className="border rounded-lg overflow-hidden shadow-md bg-[#5d4037]/80 p-3 md:p-4 text-white">
         <Image
@@ -233,21 +243,30 @@ function CardapioContent() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
-            <input
-              type="number"
-              min="1"
-              value={itemDetails.quantidade}
-              onChange={(e) => {
-                updateQuantity(
-                  section,
-                  item.id,
-                  parseInt(e.target.value),
-                  itemDetails.tamanho,
-                  itemDetails.sabor
-                )
-              }}
-              className="w-full sm:w-16 border rounded px-2 py-1 text-center text-sm bg-[#4a2c2a] text-white"
-            />
+            <div className="flex items-center space-x-2 w-full sm:w-auto">
+              <button
+                onClick={() => handleQuantityChange(Math.max(1, itemDetails.quantidade - 1))}
+                className="bg-[#4a2c2a] text-white p-2 rounded hover:bg-[#3a1c1a]"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+
+              <input
+                type="number"
+                min="1"
+                value={itemDetails.quantidade}
+                onChange={(e) => handleQuantityChange(parseInt(e.target.value))}
+                className="w-16 border rounded px-2 py-1 text-center text-sm bg-[#4a2c2a] text-white"
+              />
+
+              <button
+                onClick={() => handleQuantityChange(itemDetails.quantidade + 1)}
+                className="bg-[#4a2c2a] text-white p-2 rounded hover:bg-[#3a1c1a]"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+
             <button
               onClick={() => addToCart(item, section)}
               className="w-full sm:flex-1 bg-[#ff6f00] text-white py-2 rounded hover:bg-[#ff8f00] text-sm"
@@ -346,7 +365,6 @@ function CardapioContent() {
             {espetinhos.espetos.map(espetinho => renderMenuItem(espetinho, 'espetinhos'))}
           </div>
         </div>
-
         {/* Pratos do Dia */}
         <div className="p-4 md:p-6 rounded-2xl shadow-lg mb-8">
           <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-8 text-center text-[#ff6f00]">
