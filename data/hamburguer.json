@@ -5,7 +5,7 @@
         "nome": "Badboy",
         "preco": 20.00,
         "ingredientes": ["Pão", "Queijo", "Carne Bovina", "Molho", "Salada"],
-        "imagem": "/img/Hamburguer/Hamburguer.png"
+        "imagem": "/img/Hamburguer/hamburguer.png"
       },
       {
         "id": 2,
