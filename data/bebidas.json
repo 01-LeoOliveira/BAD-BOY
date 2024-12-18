@@ -5,21 +5,21 @@
       "nome": "Refrigerante 1L",
       "preco": 10.00,
       "opcoes": ["Pepsi", "Guaraná", "Coca Normal"],
-      "imagem": "/img/bebidas/1litro.jpg"
+      "imagem": "/img/BEBIDAS/1litro.jpg"
     },
     {
       "id": 2,
       "nome": "Refrigerante Lata",
       "preco": 7.00,
       "opcoes": ["Coca Zero", "Coca Normal", "Pepsi Twist", "Pepsi Black", "Sprite"],
-      "imagem": "/img/bebidas/bebidas.jpg"
+      "imagem": "/img/BEBIDAS/bebidas.jpg"
     },
     {
       "id": 3,
       "nome": "Sucos",
       "preco": 7.00,
       "sabores": ["Maracujá", "Goiaba", "Acerola"],
-      "imagem": "/img/bebidas/suco-acerola.jpg"
+      "imagem": "/img/BEBIDAS/suco-acerola.jpg"
     }
   ]
 }
